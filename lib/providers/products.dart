@@ -1,5 +1,6 @@
+import 'dart:convert'; //convert data into JSON
 import 'package:flutter/material.dart';
-
+import 'package:http/http.dart' as http;
 import './product.dart';
 
 class Products with ChangeNotifier {
@@ -65,6 +66,20 @@ class Products with ChangeNotifier {
   // }
 
   void addProduct(Product product) {
+    //sending HTTP request
+    const url =
+        'https://flutterchat-bee3f-default-rtdb.asia-southeast1.firebasedatabase.app/products.json';
+    http.post(
+      url,
+      body: json.encode({
+        'title': product.title,
+        'description': product.description,
+        'price': product.price,
+        'imageUrl': product.imageUrl,
+        'price': product.price,
+        'isFavorite': product.isFavorite,
+      }),
+    ); //conver map 2 json
     final newProduct = Product(
       title: product.title,
       description: product.description,
