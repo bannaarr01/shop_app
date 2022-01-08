@@ -65,30 +65,24 @@ class Products with ChangeNotifier {
   //   notifyListeners();
   // }
 
-  Future<void> addProduct(Product product) {
+//makes d method automatically wrapped in future
+  Future<void> addProduct(Product product) async {
     //sending HTTP request
     const url =
         'https://flutterchat-bee3f-default-rtdb.asia-southeast1.firebasedatabase.app/products.json';
-    return http
-        .post(
-      url,
-      body: json.encode({
-        'title': product.title,
-        'description': product.description,
-        'price': product.price,
-        'imageUrl': product.imageUrl,
-        'price': product.price,
-        'isFavorite': product.isFavorite,
-      }), //conver map 2 json
-    )
-        //this block will b skipped if error apen above
-        .then((response) {
-      //run after d above complete
-
-      //to see what's inside d response
-      // print(json.decode(response.body));// output
-      //{name: -MsthSSn6mVKIk3_S9U3}
-
+    try {
+      //no need return here n get rid of then catch
+      final response = await http.post(
+        url,
+        body: json.encode({
+          'title': product.title,
+          'description': product.description,
+          'price': product.price,
+          'imageUrl': product.imageUrl,
+          'price': product.price,
+          'isFavorite': product.isFavorite,
+        }), //conver map 2 json
+      );
       final newProduct = Product(
         title: product.title,
         description: product.description,
@@ -99,11 +93,35 @@ class Products with ChangeNotifier {
       _items.add(newProduct); //add to local list of products
       // _items.insert(0, newProduct); // at the start of the list
       notifyListeners();
-      // return Future.value();
-    }).catchError((error) {
-      //print(error);
+    } catch (error) {
+      print(error);
       throw error;
-    });
+    }
+    //this block will b skipped if error apen above
+    // .then((response) {
+    //run after d above complete
+
+    //to see what's inside d response
+    // print(json.decode(response.body));// output
+    //{name: -MsthSSn6mVKIk3_S9U3}
+
+    //with await, ds auto execute also wen d above is done
+    // final newProduct = Product(
+    //   title: product.title,
+    //   description: product.description,
+    //   price: product.price,
+    //   imageUrl: product.imageUrl,
+    //   id: json.decode(response.body)['name'],
+    // );
+    // _items.add(newProduct); //add to local list of products
+    // // _items.insert(0, newProduct); // at the start of the list
+    // notifyListeners();
+    // return Future.value();
+    //})
+    // .catchError((error) {
+    //   //print(error);
+    //   throw error;
+    // });
   }
 
   void updateProduct(String id, Product newProduct) {
