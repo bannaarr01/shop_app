@@ -65,6 +65,17 @@ class Products with ChangeNotifier {
   //   notifyListeners();
   // }
 
+  Future<void> fetchAndSetsProducts() async {
+    const url =
+        'https://flutterchat-bee3f-default-rtdb.asia-southeast1.firebasedatabase.app/products.json';
+    try {
+      final response = await http.get(url);
+      print(json.decode(response.body));
+    } catch (error) {
+      throw (error);
+    }
+  }
+
 //makes d method automatically wrapped in future
   Future<void> addProduct(Product product) async {
     //sending HTTP request
