@@ -95,47 +95,39 @@ class _EditProductScreenState extends State<EditProductScreen> {
     if (_editedProduct.id != null) {
       await Provider.of<Products>(context, listen: false)
           .updateProduct(_editedProduct.id, _editedProduct);
-      // setState(() {
-      //   _isLoading = false;
-      // });
     } else {
       try {
-        //since addProduct now returns a future
         await Provider.of<Products>(context, listen: false)
             .addProduct(_editedProduct);
       } catch (error) {
-        await showDialog<Null>(
-            context: context,
-            builder: (ctx) => AlertDialog(
-                  title: Text('An error occurred!'),
-                  // content: Text(error.toString()),
-                  content: Text('Something went wrong!'),
-                  actions: [
-                    FlatButton(
-                      child: Text('Okay'),
-                      onPressed: () {
-                        Navigator.of(ctx).pop();
-                      },
-                    ),
-                  ],
-                ));
-      } //finally {
-      //   //No matter if succeed or fail code sud be here
-
+        await showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Text('An error occurred!'),
+            content: Text('Something went wrong.'),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Okay'),
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                },
+              )
+            ],
+          ),
+        );
+      }
+      // finally {
       //   setState(() {
       //     _isLoading = false;
       //   });
       //   Navigator.of(context).pop();
       // }
-      // // .catchError((error) {
-      //since error is thrown in products we can catch it n
-      //manage what d user sees
-      // }).then((_) {
-      //});
     }
     setState(() {
       _isLoading = false;
     });
+    Navigator.of(context).pop();
+    // Navigator.of(context).pop();
   }
 
   @override

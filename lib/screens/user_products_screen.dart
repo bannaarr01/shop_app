@@ -10,8 +10,7 @@ class UserProductsScreen extends StatelessWidget {
   static const routeName = '/user-products';
 
   Future<void> _refreshProducts(BuildContext context) async {
-    await Provider.of<Products>(context, listen: false).fetchAndSetsProducts();
-    //we don't want to listen 2 any update but to just trigger fetch method and to avoid unnecessary widget rebuild
+    await Provider.of<Products>(context).fetchAndSetsProducts();
   }
 
   @override

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_app/providers/products.dart';
 
 import '../widgets/app_drawer.dart';
 import '../widgets/products_grid.dart';
 import '../widgets/badge.dart';
 import '../providers/cart.dart';
 import './cart_screen.dart';
+import '../providers/products.dart';
 
 enum FilterOptions {
   Favorites,
@@ -20,41 +20,32 @@ class ProductsOverviewScreen extends StatefulWidget {
 
 class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   var _showOnlyFavorites = false;
+  var _isInit = true;
   var _isLoading = false;
 
-  var _isInit = true;
+  @override
+  void initState() {
+    // Provider.of<Products>(context).fetchAndSetProducts(); // WON'T WORK!
+    // Future.delayed(Duration.zero).then((_) {
+    //   Provider.of<Products>(context).fetchAndSetProducts();
+    // });
+    super.initState();
+  }
 
   @override
-  void didChangeDependencies() async {
+  void didChangeDependencies() {
     if (_isInit) {
       setState(() {
         _isLoading = true;
       });
-      Provider.of<Products>(context, listen: false)
-          .fetchAndSetsProducts()
-          .then((_) {
+      Provider.of<Products>(context).fetchAndSetsProducts().then((_) {
         setState(() {
           _isLoading = false;
         });
       });
-    } //only one wen ds page first load
+    }
     _isInit = false;
     super.didChangeDependencies();
-  }
-
-//or
-
-//we av a state object and initState wud run when this(d products
-//view) first gets rendered and it would only run once, which is
-//perfect for fetchin data
-  @override
-  void initState() {
-    super.initState();
-    // can fetch d data here but d widget wud not be lean
-    // Provider.of<Products>(context, listen: false).fetchAndSetsProducts();//with ds listen false we can use it here
-    // Future.delayed(Duration.zero).then((_) {
-    //   Provider.of<Products>(context, listen: false).fetchAndSetsProducts();
-    // });
   }
 
   @override
