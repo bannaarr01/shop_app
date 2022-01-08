@@ -20,16 +20,27 @@ class ProductsOverviewScreen extends StatefulWidget {
 
 class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   var _showOnlyFavorites = false;
-  // var _isInit = true;
+  var _isLoading = false;
 
-  // @override
-  // void didChangeDependencies() {
-  //   if (_isInit) {
-  //     Provider.of<Products>(context, listen: false).fetchAndSetsProducts();
-  //   } //only one wen ds page first load
-  //   _isInit = false;
-  //   super.didChangeDependencies();
-  // }
+  var _isInit = true;
+
+  @override
+  void didChangeDependencies() async {
+    if (_isInit) {
+      setState(() {
+        _isLoading = true;
+      });
+      Provider.of<Products>(context, listen: false)
+          .fetchAndSetsProducts()
+          .then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
+    } //only one wen ds page first load
+    _isInit = false;
+    super.didChangeDependencies();
+  }
 
 //or
 
@@ -41,9 +52,9 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
     super.initState();
     // can fetch d data here but d widget wud not be lean
     // Provider.of<Products>(context, listen: false).fetchAndSetsProducts();//with ds listen false we can use it here
-    Future.delayed(Duration.zero).then((_) {
-      Provider.of<Products>(context, listen: false).fetchAndSetsProducts();
-    });
+    // Future.delayed(Duration.zero).then((_) {
+    //   Provider.of<Products>(context, listen: false).fetchAndSetsProducts();
+    // });
   }
 
   @override
@@ -93,7 +104,11 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
         ],
       ),
       drawer: AppDrawer(),
-      body: ProductsGrid(_showOnlyFavorites),
+      body: _isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : ProductsGrid(_showOnlyFavorites),
     );
   }
 }
