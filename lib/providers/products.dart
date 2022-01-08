@@ -81,6 +81,7 @@ class Products with ChangeNotifier {
         'isFavorite': product.isFavorite,
       }), //conver map 2 json
     )
+        //this block will b skipped if error apen above
         .then((response) {
       //run after d above complete
 
@@ -99,6 +100,9 @@ class Products with ChangeNotifier {
       // _items.insert(0, newProduct); // at the start of the list
       notifyListeners();
       // return Future.value();
+    }).catchError((error) {
+      //print(error);
+      throw error;
     });
   }
 
