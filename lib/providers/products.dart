@@ -65,11 +65,11 @@ class Products with ChangeNotifier {
   //   notifyListeners();
   // }
 
-  void addProduct(Product product) {
+  Future<void> addProduct(Product product) {
     //sending HTTP request
     const url =
         'https://flutterchat-bee3f-default-rtdb.asia-southeast1.firebasedatabase.app/products.json';
-    http
+    return http
         .post(
       url,
       body: json.encode({
@@ -98,6 +98,7 @@ class Products with ChangeNotifier {
       _items.add(newProduct); //add to local list of products
       // _items.insert(0, newProduct); // at the start of the list
       notifyListeners();
+      // return Future.value();
     });
   }
 
