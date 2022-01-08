@@ -1,6 +1,7 @@
 import 'dart:convert'; //convert data into JSON
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shop_app/models/http_execption.dart';
 import './product.dart';
 
 class Products with ChangeNotifier {
@@ -175,8 +176,37 @@ class Products with ChangeNotifier {
     }
   }
 
-  void deleteProduct(String id) {
+//Utilizing Optimistic updating
+  Future<void> deleteProduct(String id) async {
+    final url =
+        'https://flutterchat-bee3f-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id.json';
+    final existingProductIdex = _items.indexWhere(
+        (prod) => prod.id == id); //givs us d product index we want to remove
+    var existingProduct = _items[
+        existingProductIdex]; //reference 2 dt product dts abt to be deleted, d item lives in d memory
+    //Dart will clear it from memory if it finds no one who is
+    //still interested in d data
+    _items.removeAt(
+        existingProductIdex); //will remove d item from the list not from d memory
+    // await http.delete(url).then((response) {
+    final response = await http.delete(url);
+
     _items.removeWhere((prod) => prod.id == id);
     notifyListeners();
+
+    if (response.statusCode >= 400) {
+      _items.insert(existingProductIdex, existingProduct);
+      notifyListeners();
+      throw HttpException('Could not delete product.');
+    }
+    //print(response.statusCode);
+    //if succeed, remove d obj in memory
+    existingProduct = null;
+    //delete product
+// .catchError((_) {
+//       _items.insert(existingProductIdex, existingProduct);
+//       //this will Re-Insert d product to same index if it fails to delete
+//       notifyListeners(); //after ROll BacK
+//     });
   }
 }
