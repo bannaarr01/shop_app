@@ -69,7 +69,8 @@ class Products with ChangeNotifier {
     //sending HTTP request
     const url =
         'https://flutterchat-bee3f-default-rtdb.asia-southeast1.firebasedatabase.app/products.json';
-    http.post(
+    http
+        .post(
       url,
       body: json.encode({
         'title': product.title,
@@ -78,18 +79,26 @@ class Products with ChangeNotifier {
         'imageUrl': product.imageUrl,
         'price': product.price,
         'isFavorite': product.isFavorite,
-      }),
-    ); //conver map 2 json
-    final newProduct = Product(
-      title: product.title,
-      description: product.description,
-      price: product.price,
-      imageUrl: product.imageUrl,
-      id: DateTime.now().toString(),
-    );
-    _items.add(newProduct);
-    // _items.insert(0, newProduct); // at the start of the list
-    notifyListeners();
+      }), //conver map 2 json
+    )
+        .then((response) {
+      //run after d above complete
+
+      //to see what's inside d response
+      // print(json.decode(response.body));// output
+      //{name: -MsthSSn6mVKIk3_S9U3}
+
+      final newProduct = Product(
+        title: product.title,
+        description: product.description,
+        price: product.price,
+        imageUrl: product.imageUrl,
+        id: json.decode(response.body)['name'],
+      );
+      _items.add(newProduct); //add to local list of products
+      // _items.insert(0, newProduct); // at the start of the list
+      notifyListeners();
+    });
   }
 
   void updateProduct(String id, Product newProduct) {
