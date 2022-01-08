@@ -152,10 +152,23 @@ class Products with ChangeNotifier {
     // });
   }
 
-  void updateProduct(String id, Product newProduct) {
+//updating product, use try catch
+  Future<void> updateProduct(String id, Product newProduct) async {
+    final url =
+        'https://flutterchat-bee3f-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id.json';
+    //target a specific profuct
+    await http.patch(url,
+        body: json.encode({
+          'title': newProduct.title,
+          'description': newProduct.description,
+          'price': newProduct.price,
+          'imageUrl': newProduct.imageUrl,
+          'price': newProduct.price,
+          //isFavorite status !
+        }));
     final prodIndex = _items.indexWhere((prod) => prod.id == id);
     if (prodIndex >= 0) {
-      _items[prodIndex] = newProduct;
+      _items[prodIndex] = newProduct; //update in local memory
       notifyListeners();
     } else {
       print('...');

@@ -93,11 +93,11 @@ class _EditProductScreenState extends State<EditProductScreen> {
       _isLoading = true;
     });
     if (_editedProduct.id != null) {
-      Provider.of<Products>(context, listen: false)
+      await Provider.of<Products>(context, listen: false)
           .updateProduct(_editedProduct.id, _editedProduct);
-      setState(() {
-        _isLoading = false;
-      });
+      // setState(() {
+      //   _isLoading = false;
+      // });
     } else {
       try {
         //since addProduct now returns a future
@@ -119,20 +119,23 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     ),
                   ],
                 ));
-      } finally {
-        //No matter if succeed or fail code sud be here
+      } //finally {
+      //   //No matter if succeed or fail code sud be here
 
-        setState(() {
-          _isLoading = false;
-        });
-        Navigator.of(context).pop();
-      }
-      // .catchError((error) {
+      //   setState(() {
+      //     _isLoading = false;
+      //   });
+      //   Navigator.of(context).pop();
+      // }
+      // // .catchError((error) {
       //since error is thrown in products we can catch it n
       //manage what d user sees
       // }).then((_) {
       //});
     }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
