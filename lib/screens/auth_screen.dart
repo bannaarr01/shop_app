@@ -143,6 +143,8 @@ class _AuthCardState extends State<AuthCard> {
             .signup(_authData['email'], _authData['password']);
         //_authData where our data is stored wen saved is called
       }
+
+      // has downside 👉 Navigator.of(context).pushReplacementNamed('/products-overview');
     } on HttpException catch (error) {
       var errorMessage = 'Authenticated failed.';
       if (error.toString().contains('EMAIL_EXISTS')) {
