@@ -72,12 +72,15 @@ class Products with ChangeNotifier {
   //   notifyListeners();
   // }
 
+//make filtering happen on d server, so dat u don't fetch bundle of data first just to get oen product. Firebase has d mechanism n wen u
+//ar building ur backend, u sud have such capability
   Future<void> fetchAndSetsProducts() async {
     // final url = Uri.https(
     //     'flutterchat-bee3f-default-rtdb.asia-southeast1.firebasedatabase.app',
     //     '/products.json?auth=$authToken');
     var url = Uri.parse(
-        'https://flutterchat-bee3f-default-rtdb.asia-southeast1.firebasedatabase.app/products.json?auth=$authToken');
+        'https://flutterchat-bee3f-default-rtdb.asia-southeast1.firebasedatabase.app/products.json?auth=$authToken&orderBy="creatorId"&equalTo="$userId"');
+    //firebase specific commands 👆🏻 Only ds entries sud b returned
     try {
       final response = await http.get(url);
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
@@ -124,6 +127,7 @@ class Products with ChangeNotifier {
           'description': product.description,
           'imageUrl': product.imageUrl,
           'price': product.price,
+          'creatorId': userId,
         }),
       );
       final newProduct = Product(
