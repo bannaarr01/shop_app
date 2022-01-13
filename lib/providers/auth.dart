@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:shop_app/models/http_execption.dart';
+import 'dart:async';
 
 class Auth with ChangeNotifier {
 //ds token expires at some point in time, that's d security mechanism
@@ -10,7 +11,7 @@ class Auth with ChangeNotifier {
   String _token;
   DateTime _expiryDate;
   String _userId;
-
+  Timer _authTimer;
   //getter
   String get userId {
     return _userId;
@@ -58,6 +59,7 @@ class Auth with ChangeNotifier {
           ),
         ),
       );
+      _autoLogout(); //activate when user log in
       notifyListeners();
     } catch (error) {
       throw error;
@@ -99,6 +101,22 @@ class Auth with ChangeNotifier {
     _token = null;
     _userId = null;
     _expiryDate = null;
+    if (_authTimer != null) {
+      _authTimer.cancel();
+    }
+    _authTimer = null;
     notifyListeners();
+  }
+
+  void _autoLogout() {
+    if (_authTimer != null) {
+      _authTimer.cancel();
+    }
+
+    //btw expiry time n current time
+    final timeToExpiry = _expiryDate.difference(DateTime.now()).inSeconds;
+    //test wit 3 seconds to check
+    // _authTimer = Timer(Duration(seconds: 3), logout);
+    _authTimer = Timer(Duration(seconds: timeToExpiry), logout);
   }
 }
