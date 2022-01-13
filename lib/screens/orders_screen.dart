@@ -5,29 +5,25 @@ import '../providers/orders.dart' show Orders;
 import '../widgets/order_item.dart';
 import '../widgets/app_drawer.dart';
 
-class OrdersScreen extends StatefulWidget {
+class OrdersScreen extends StatelessWidget {
   static const routeName = '/orders';
 
-  @override
-  State<OrdersScreen> createState() => _OrdersScreenState();
-}
+// class _OrdersScreenState extends State<OrdersScreen> {
+//   //var _isLoading = false;
 
-class _OrdersScreenState extends State<OrdersScreen> {
-  //var _isLoading = false;
-
-  @override
-  void initState() {
-    //a constructor dt giv us a new future
-    Future.delayed(Duration.zero).then((_) {
-      //ds alone is ok with no future.delayed
-      // setState(() {
-      //   _isLoading = true;
-      // });
-      Provider.of<Orders>(context, listen: false).fetchAndSetOrders();
-    });
-    //Duration.zero instantly resolve bt still execute after ds initialization is done cos all apen simulteneously but ds is queued at d end. By default it doent return a future so dnt turn it to async, instead use then
-    super.initState();
-  }
+//   @override
+//   void initState() {
+//     //a constructor dt giv us a new future
+//     // Future.delayed(Duration.zero).then((_) {
+//     //   //ds alone is ok with no future.delayed
+//     //   // setState(() {
+//     //   //   _isLoading = true;
+//     //   // });
+//     //   Provider.of<Orders>(context, listen: false).fetchAndSetOrders();
+//     // });
+//     //Duration.zero instantly resolve bt still execute after ds initialization is done cos all apen simulteneously but ds is queued at d end. By default it doent return a future so dnt turn it to async, instead use then
+//     super.initState();
+//   }
 
   @override
   Widget build(BuildContext context) {
