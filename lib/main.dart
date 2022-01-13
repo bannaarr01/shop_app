@@ -33,8 +33,15 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(
           value: Cart(),
         ),
-        ChangeNotifierProvider.value(
-          value: Orders(),
+        // ChangeNotifierProvider.value(
+        //   value: Orders(),
+        // ),
+        // //dependency Auth n we r abt to provid Order
+        ChangeNotifierProxyProvider<Auth, Orders>(
+          update: (_, auth, previousOrders) => Orders(
+              auth.token, previousOrders == null ? [] : previousOrders.orders),
+          //latest use update
+          // update: (ctx, auth)Products(),
         ),
       ],
       //To rebuild material app ONLY n not d entire tree use consumer

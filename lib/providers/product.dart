@@ -26,13 +26,15 @@ class Product with ChangeNotifier {
   }
 
 //Proper Optimistic Update
-  Future<void> toggleFavoriteStatus() async {
+  Future<void> toggleFavoriteStatus(String authToken) async {
     final oldStatus = isFavorite;
     isFavorite = !isFavorite;
     notifyListeners();
-    final url = Uri.https(
-        'flutterchat-bee3f-default-rtdb.asia-southeast1.firebasedatabase.app',
-        '/products/$id.json');
+    // final url = Uri.https(
+    //     'flutterchat-bee3f-default-rtdb.asia-southeast1.firebasedatabase.app',
+    //     '/products/$id.json');
+    final url = Uri.parse(
+        'https://flutterchat-bee3f-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id.json?auth=$authToken');
     try {
       final response = await http.patch(
         url,
