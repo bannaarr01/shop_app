@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:shop_app/models/http_execption.dart';
 import 'dart:async';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Auth with ChangeNotifier {
 //ds token expires at some point in time, that's d security mechanism
@@ -61,6 +62,16 @@ class Auth with ChangeNotifier {
       );
       _autoLogout(); //activate when user log in
       notifyListeners();
+      //setting shared_preferences, it also involve working with Future
+      final prefs = await SharedPreferences.getInstance();
+      //return future  which will return a shared_preferences instance and thats is then basically ur tunnel to that on device storage
+      //json.encode({''})incase u have a map or complex data u can use json.encode
+      final userData = json.encode({
+        'token': _token,
+        'userId': _userId,
+        'expiryDate': _expiryDate.toIso8601String()
+      }); //stored my serialized, my converted data here
+      prefs.setString('userData', userData); //key n value
     } catch (error) {
       throw error;
     }
@@ -97,7 +108,28 @@ class Auth with ChangeNotifier {
     // print(json.decode(response.body));
   }
 
-  void logout() {
+//Retrieving d SharedPreferences
+  Future<bool> tryAutoLogin() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (!prefs.containsKey('userData')) {
+      return false;
+    }
+    final extractedUserData =
+        json.decode(prefs.getString('userData')) as Map<String, Object>;
+    final expiryDate = DateTime.parse(extractedUserData['expiryDate']);
+    if (expiryDate.isBefore(DateTime.now())) {
+      //if expiryDateTime is < dan currentTime, den token is invalid
+      return false;
+    }
+    _token = extractedUserData['token'];
+    _userId = extractedUserData['userId'];
+    _expiryDate = expiryDate;
+    notifyListeners();
+    _autoLogout();
+    return true; //return true wen succeed
+  }
+
+  void logout() async {
     _token = null;
     _userId = null;
     _expiryDate = null;
@@ -106,6 +138,9 @@ class Auth with ChangeNotifier {
     }
     _authTimer = null;
     notifyListeners();
+    final prefs = await SharedPreferences.getInstance();
+    // prefs.remove('userData'); for single clearing
+    prefs.clear(); //clear/purge all
   }
 
   void _autoLogout() {
