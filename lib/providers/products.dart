@@ -42,6 +42,11 @@ class Products with ChangeNotifier {
   ];
   // var _showFavoritesOnly = false;
 
+  final String authToken;
+
+  //adding constructor
+  Products(this.authToken, this._items);
+
   List<Product> get items {
     // if (_showFavoritesOnly) {
     //   return _items.where((prodItem) => prodItem.isFavorite).toList();
@@ -68,9 +73,11 @@ class Products with ChangeNotifier {
   // }
 
   Future<void> fetchAndSetsProducts() async {
-    final url = Uri.https(
-        'flutterchat-bee3f-default-rtdb.asia-southeast1.firebasedatabase.app',
-        '/products.json');
+    // final url = Uri.https(
+    //     'flutterchat-bee3f-default-rtdb.asia-southeast1.firebasedatabase.app',
+    //     '/products.json?auth=$authToken');
+    final url = Uri.parse(
+        'https://flutterchat-bee3f-default-rtdb.asia-southeast1.firebasedatabase.app/products.json?auth=$authToken');
     try {
       final response = await http.get(url);
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
