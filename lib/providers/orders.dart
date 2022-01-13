@@ -36,6 +36,7 @@ class Orders with ChangeNotifier {
     if (extractedData == null) {
       return;
     }
+    //key n value pair
     extractedData.forEach((orderId, orderData) {
       loadedOrders.add(
         OrderItem(
@@ -55,7 +56,7 @@ class Orders with ChangeNotifier {
         ),
       );
     });
-    _orders = loadedOrders.reversed.toList();
+    _orders = loadedOrders.reversed.toList(); //shows d new orders first
     notifyListeners();
   }
 
