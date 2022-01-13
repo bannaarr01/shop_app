@@ -26,21 +26,22 @@ class Product with ChangeNotifier {
   }
 
 //Proper Optimistic Update
-  Future<void> toggleFavoriteStatus(String authToken) async {
+  Future<void> toggleFavoriteStatus(String authToken, String userId) async {
     final oldStatus = isFavorite;
     isFavorite = !isFavorite;
     notifyListeners();
-    // final url = Uri.https(
-    //     'flutterchat-bee3f-default-rtdb.asia-southeast1.firebasedatabase.app',
-    //     '/products/$id.json');
+    // final url = Uri.parse(
+    //     'https://flutterchat-bee3f-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id.json?auth=$authToken');
     final url = Uri.parse(
-        'https://flutterchat-bee3f-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id.json?auth=$authToken');
+        'https://flutterchat-bee3f-default-rtdb.asia-southeast1.firebasedatabase.app/userFavorites/$userId/$id.json?auth=$authToken');
     try {
-      final response = await http.patch(
+      //now put request to override
+      final response = await http.put(
         url,
-        body: json.encode({
-          'isFavorite': isFavorite,
-        }),
+        //send jes d value  not with curly braces or isfavorit:true
+        body: json.encode(isFavorite
+            //'isFavorite': isFavorite,
+            ),
       );
       if (response.statusCode >= 400) {
         _setFavValue(oldStatus);
