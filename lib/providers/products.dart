@@ -74,12 +74,16 @@ class Products with ChangeNotifier {
 
 //make filtering happen on d server, so dat u don't fetch bundle of data first just to get oen product. Firebase has d mechanism n wen u
 //ar building ur backend, u sud have such capability
-  Future<void> fetchAndSetsProducts() async {
+  Future<void> fetchAndSetsProducts([bool filterByUser = false]) async {
+    //[] make filterByUser a optional position argument but sud provide default value
+
     // final url = Uri.https(
     //     'flutterchat-bee3f-default-rtdb.asia-southeast1.firebasedatabase.app',
     //     '/products.json?auth=$authToken');
+    final filterString =
+        filterByUser ? 'orderBy="creatorId"&equalTo="$userId"' : '';
     var url = Uri.parse(
-        'https://flutterchat-bee3f-default-rtdb.asia-southeast1.firebasedatabase.app/products.json?auth=$authToken&orderBy="creatorId"&equalTo="$userId"');
+        'https://flutterchat-bee3f-default-rtdb.asia-southeast1.firebasedatabase.app/products.json?auth=$authToken&$filterString');
     //firebase specific commands 👆🏻 Only ds entries sud b returned
     try {
       final response = await http.get(url);
